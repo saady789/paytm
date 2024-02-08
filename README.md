@@ -1,1 +1,1 @@
-This project is build under the 100xdevs cohort by harkirat singh. It used nextjs graphql elephantSQL recoil nextauth
+This project is build under the 100xdevs cohort by harkirat singh. It used nextjs graphql prisma postgreSQL recoil nextauth
