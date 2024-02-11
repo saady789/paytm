@@ -52,6 +52,7 @@ export const options = {
       },
       async authorize(credentials) {
         console.log("Credentials: ", credentials);
+        return;
         // try {
         //   const foundUser = await User.findOne({ email: credentials.email })
         //     .lean()
@@ -89,4 +90,7 @@ export const options = {
       return session;
     },
   },
+  pages:{
+    signIn: '/Login',
+  }
 };
