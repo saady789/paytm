@@ -29,7 +29,7 @@ const page: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center items-center">
             <div className="bg-white p-8 rounded shadow-md w-96">
-                <h2 className="text-2xl mb-4">Sign Up</h2>
+                <h2 className="text-2xl mb-4">Log In </h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
 
 
