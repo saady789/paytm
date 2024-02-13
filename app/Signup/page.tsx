@@ -1,6 +1,8 @@
 "use client"
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { trpc } from '@/app/_trpc/Client';
+
 
 interface FormValues {
     name: string;
@@ -10,6 +12,9 @@ interface FormValues {
 }
 
 const page: React.FC = () => {
+
+    const createUser = trpc.user.createUser.useMutation();
+
 
     const {
         watch,
@@ -22,9 +27,18 @@ const page: React.FC = () => {
     password.current = watch("password");
 
 
-    const onSubmit: SubmitHandler<FormValues> = (data) => {
+    const onSubmit: SubmitHandler<FormValues> = async(data:FormValues) => {
+        const email = data.email;
+        const name = data.name;
+        const password = data.password;
+        const input = {name,email,password}
 
-        console.log(data)
+        const res = await createUser.mutateAsync(input);
+
+        console.log(res);
+
+
+
     }
 
 
