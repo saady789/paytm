@@ -2,6 +2,7 @@
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { trpc } from '@/app/_trpc/Client';
+import { signIn } from 'next-auth/react';
 
 
 interface FormValues {
@@ -14,7 +15,6 @@ interface FormValues {
 const page: React.FC = () => {
 
     const createUser = trpc.user.createUser.useMutation();
-
 
     const {
         watch,
@@ -34,8 +34,17 @@ const page: React.FC = () => {
         const input = {name,email,password}
 
         const res = await createUser.mutateAsync(input);
+        
 
-        console.log(res);
+        if(res.status === 'success'){
+            const response = await signIn("credentials", {
+                email,password,
+                redirect: true,
+                callbackUrl: '/',
+            });
+        }
+
+      
 
 
 

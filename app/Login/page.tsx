@@ -1,7 +1,7 @@
 "use client";
 import React from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form';
-
+import { signIn } from 'next-auth/react';
 
 interface FormValues {
     email: string;
@@ -17,12 +17,15 @@ const page: React.FC = () => {
         formState: { errors },
     } = useForm<FormValues>();
 
+    const onSubmit: SubmitHandler<FormValues> = async(data:FormValues) => {
 
-
-
-    const onSubmit: SubmitHandler<FormValues> = (data) => {
-
-        console.log(data)
+        const response = await signIn("credentials", {
+            ...data,
+            redirect: true,
+            callbackUrl: '/',
+        });
+        
+        console.log("response is ",response);
     }
 
 

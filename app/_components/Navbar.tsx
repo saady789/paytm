@@ -1,13 +1,21 @@
+"use client";
 import React, { useEffect, useState } from 'react';
-import { getServerSession, Session } from 'next-auth';
-import { options } from '../api/auth/[...nextauth]/options';
+// import { getServerSession, Session } from 'next-auth';
+// import { options } from '../api/auth/[...nextauth]/options';
 import Link from "next/link";
+import { useSession } from 'next-auth/react';
+const Navbar: React.FC =  () => {
 
-const Navbar: React.FC = async () => {
+  const { data: session } = useSession();
 
-
-  const session = await getServerSession(options);
-  console.log("session is ", session);
+  useEffect(() => {
+    console.log("session is ", session);
+    
+    return () => {
+      
+    }
+  }, [session])
+  
 
   return (
     <div className='w-full h-16 bg-blue-500 flex justify-start items-center'>

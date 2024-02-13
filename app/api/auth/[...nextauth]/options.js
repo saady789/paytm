@@ -2,7 +2,7 @@
 // import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-
+import { prisma } from "@/prisma/client";
 export const options = {
   providers: [
     // GitHubProvider({
@@ -51,46 +51,47 @@ export const options = {
         },
       },
       async authorize(credentials) {
-        console.log("Credentials: ", credentials);
-        return;
-        // try {
-        //   const foundUser = await User.findOne({ email: credentials.email })
-        //     .lean()
-        //     .exec();
-
-        //   if (foundUser) {
-        //     console.log("User Exists");
-        //     const match = await bcrypt.compare(
-        //       credentials.password,
-        //       foundUser.password
-        //     );
-
-        //     if (match) {
-        //       console.log("Good Pass");
-        //       delete foundUser.password;
-
-        //       foundUser["role"] = "Unverified Email";
-        //       return foundUser;
-        //     }
-        //   }
-        // } catch (error) {
-        //   console.log(error);
-        // }
-        // return null;
-      },
+        // console.log("Credentials: ", credentials);
+  
+        try {
+          
+          const foundUser = await prisma.user.findUnique({ where: { email: credentials.email } })
+          
+          if (foundUser && (foundUser.password==credentials.password) ) {
+              console.log("Good Pass");
+      
+              // Return an object containing the user details
+              return {
+                ...foundUser,
+                
+              };
+            
+          }
+        } catch (error) {
+          // console.log(error);
+        }
+        return null;
+      }
+      
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.role = user.role;
+      if (user) {
+        token = { ...token, ...user };
+      }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) session.user.role = token.role;
+      session.user = token;
       return session;
     },
   },
   pages:{
     signIn: '/Login',
-  }
+  },
+  session: {
+    // Add session configuration if needed
+    strategy: "jwt",
+  },
 };
