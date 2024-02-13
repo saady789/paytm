@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 // import { options } from '../api/auth/[...nextauth]/options';
 import Link from "next/link";
 import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 const Navbar: React.FC =  () => {
 
   const { data: session } = useSession();
@@ -15,14 +16,36 @@ const Navbar: React.FC =  () => {
       
     }
   }, [session])
+
+  const handleSignout = async () => {
+    await signOut();
+  }
   
 
   return (
-    <div className='w-full h-16 bg-blue-500 flex justify-start items-center'>
-      {session && <Link href="/api/auth/signout?callbackUrl=/" className='ml-4 font-semibold text-white text-xl cursor-pointer rounded-md p-2 hover:text-neutral-200'>Logout</Link>}
-      {!session && <Link href="/api/auth/signin" className='ml-4 font-semibold text-white text-xl cursor-pointer rounded-md p-2 hover:text-neutral-200'>Login</Link>}
-      <h1 className='ml-4 font-semibold text-white text-xl cursor-pointer'> Please login/signup to continue </h1>
+    <nav className="bg-blue-500 py-4">
+    <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <div className="flex-shrink-0">
+        <Link href="/" className="text-white text-xl font-bold">
+          Paytm
+        </Link>
+      </div>
+      <div className="flex space-x-4">
+        <Link href="/" className="text-white font-semibold hover:text-gray-300">
+          Home
+        </Link>
+        <Link href="/transfer" className="text-white font-semibold hover:text-gray-300">
+          Transfer Money
+        </Link>
+        {session && <h1   className="text-white font-semibold hover:text-gray-300 cursor-pointer" onClick={handleSignout}>
+          Logout
+        </h1>}
+        {!session && <Link href="/Login"  className="text-white font-semibold hover:text-gray-300">
+          Login
+        </Link>}
+      </div>
     </div>
+  </nav>
   );
 };
 

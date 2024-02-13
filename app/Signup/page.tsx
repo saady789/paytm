@@ -1,9 +1,11 @@
 "use client"
-import React from 'react';
+import React,{useState} from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { trpc } from '@/app/_trpc/Client';
 import { signIn } from 'next-auth/react';
-
+import Link from "next/link";
+import {toast} from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 interface FormValues {
     name: string;
@@ -13,8 +15,9 @@ interface FormValues {
 }
 
 const page: React.FC = () => {
-
+    const [disabled, setDisabled] = useState<boolean>(false);
     const createUser = trpc.user.createUser.useMutation();
+    const router = useRouter();
 
     const {
         watch,
@@ -35,18 +38,17 @@ const page: React.FC = () => {
 
         const res = await createUser.mutateAsync(input);
         
-
         if(res.status === 'success'){
             const response = await signIn("credentials", {
                 email,password,
                 redirect: true,
                 callbackUrl: '/',
             });
+
+        if( response && response?.status == 401) { return toast.error("Invalid email or password") ;}
+        if( response && response?.status == 500 ) {return toast.info("Internal Server Error"); }
+        if( response && response?.status == 200) {router.push('/');}
         }
-
-      
-
-
 
     }
 
@@ -85,6 +87,8 @@ const page: React.FC = () => {
                     </div>
 
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Sign Up</button>
+                    <h1 className='m-2 text-blue-500'>Already a user? Click <Link href="/Login">here</Link> to login</h1>
+
                 </form>
             </div>
         </div>

@@ -5,7 +5,8 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react"
 import Provider from "./_trpc/Provider";
 const inter = Inter({ subsets: ["latin"] });
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
  const metadata: Metadata = {
   title: "Paytm",
   description: "send and receive money with ease",
@@ -23,7 +24,7 @@ export default function RootLayout(
     
       <SessionProvider >
         <html lang="en">
-          <body className={inter.className}> <Provider> {children} </Provider> </body>
+          <body className={inter.className}> <Provider>   <ToastContainer /> {children} </Provider> </body>
         </html>
       </SessionProvider>
    
