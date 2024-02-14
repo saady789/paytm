@@ -5,12 +5,17 @@ import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
+import { useRecoilValue } from 'recoil';
+import {userAtom} from '@/app/store/atoms/atoms';
+
 const Navbar: React.FC =  () => {
 
   const { data: session } = useSession();
+  let val = useRecoilValue(userAtom);
 
   useEffect(() => {
     console.log("session is ", session);
+    console.log("val is ", val);
     
     return () => {
       
