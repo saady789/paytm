@@ -6,13 +6,17 @@ import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { current } from '@reduxjs/toolkit';
 import { trpc } from "@/app/_trpc/Client";
+import {updateUserBalance} from '@/app/redux/userSlice';
+
 
 const HomePage = () => {
     const { data: session } = useSession();
+    const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user.currentUser);
-    const [selectedUser, setSelectedUser] = useState<any>(null);
-    const [amount, setAmount] = useState<number>(1);
-    const sendMoney = trpc.transaction.sendMoney.useMutation();
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [amount, setAmount] = useState(1);
+    const send = trpc.transaction.sendMoney.useMutation();
+    const balance = trpc.user.getUserBalance.useMutation();
 
     // Dummy users for demonstration purposes
     const users = useAppSelector((state) => state?.user?.allUsers);
@@ -26,18 +30,17 @@ const HomePage = () => {
         }
 
         if (user?.id && selectedUser.value && amount) {
-            const response = await sendMoney.mutate({
+            const response = await send.mutateAsync({
                 senderId: user.id,
                 receiverId: selectedUser.value,
                 amount: amount,
             });
+            
+            if(response.status=='failure') toast.error(response.message);
+            else toast.success('Money sent successfully');
+            let userBalance = await balance.mutateAsync(user?.id);
+            if(userBalance.payload) dispatch(updateUserBalance(userBalance?.payload))
 
-            if (response.error) {
-                return toast.error('Failed to send money. Please try again');
-            } else {
-                toast.success('Money sent successfully');
-                setAmount(1);
-            }
         }
     };
 

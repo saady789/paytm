@@ -66,6 +66,12 @@ export const userSlice = createSlice({
             
             state.allUsers = action.payload
         },
+        updateUserBalance:(state,action) => {
+            
+            if(state.currentUser) {
+                state.currentUser.balance = action.payload;
+            }
+        },
     },
     extraReducers: (builder) => {
         builder   
@@ -75,5 +81,5 @@ export const userSlice = createSlice({
 
 });
 
-export const { setCurrentUser,setAllUser} = userSlice.actions;
+export const { setCurrentUser,setAllUser,updateUserBalance} = userSlice.actions;
 export default userSlice.reducer;

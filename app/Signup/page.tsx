@@ -37,7 +37,7 @@ const page: React.FC = () => {
         const input = {name,email,password}
 
         const res = await createUser.mutateAsync(input);
-        
+              
         if(res.status === 'success'){
             const response = await signIn("credentials", {
                 email,password,

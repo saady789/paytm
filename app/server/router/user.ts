@@ -117,6 +117,48 @@ export const userRouter = router({
             };
             return output;
         }),
+        getUserBalance: publicProcedure
+        .input(
+            z.number() // Input: User ID
+        )
+        .output(
+            z.object({
+                status: z.string(),
+                subject: z.string(),
+                message: z.string(),
+                payload: z.union([
+                    z.null(),
+                    z.number() // Output: User's balance (number)
+                ])
+            })
+        )
+        .mutation(async (opts) => {
+            const userId = opts.input;
+
+            // Fetch the user by ID
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { balance: true } // Select only the balance field
+            });
+
+            if (!user) {
+                // If the user with the provided ID doesn't exist
+                return {
+                    status: 'failure',
+                    subject: 'error',
+                    message: 'User not found',
+                    payload: null
+                };
+            }
+
+            // Return the user's balance
+            return {
+                status: 'success',
+                subject: 'success',
+                message: 'User balance fetched successfully',
+                payload: user.balance // Return the user's balance
+            };
+        })
 
 
 

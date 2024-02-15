@@ -34,12 +34,20 @@ export const transactionRouter = router({
 
             // Check if sender and receiver exist
             if (!sender || !receiver) {
-                throw new Error('User not found');
+                return {
+                    status: 'failure',
+                    subject: 'error',
+                    message: 'User not found',
+                };
             }
 
             // Check if sender has enough balance
             if (sender.balance < amount) {
-                throw new Error('Insufficient balance');
+                return {
+                    status: 'failure',
+                    subject: 'error',
+                    message: 'Insufficient balance',
+                };
             }
 
             // Start a transaction to update sender and receiver balances atomically
@@ -62,8 +70,12 @@ export const transactionRouter = router({
                     message: 'Money sent successfully',
                 };
             } catch (error) {
-                // Transaction failed, throw new Error
-                throw new Error('An error occurred while processing the transaction');
+                // Transaction failed, return failure
+                return {
+                    status: 'failure',
+                    subject: 'error',
+                    message: 'Internal Server Error',
+                };
             }
         }),
 });
