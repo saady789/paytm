@@ -2,13 +2,28 @@
 'use client'
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 
+type User = {
+    name: string;
+    email: string;
+    sub: string;
+    id: number;
+    password: string;
+    balance: number;
+    createdAt: string;
+    iat: number;
+    exp: number;
+    jti: string;
+  };
+
 interface State { 
-    currentUser: null | object ,
+    currentUser: null | User ,
+    allUsers: null | User[]
     
 }
 
 const initialState : State = {
     currentUser:null,
+    allUsers:null
     
 
 };
@@ -47,6 +62,10 @@ export const userSlice = createSlice({
             
             state.currentUser = action.payload
         },
+        setAllUser:(state,action) => {
+            
+            state.allUsers = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder   
@@ -56,5 +75,5 @@ export const userSlice = createSlice({
 
 });
 
-export const { setCurrentUser} = userSlice.actions;
+export const { setCurrentUser,setAllUser} = userSlice.actions;
 export default userSlice.reducer;

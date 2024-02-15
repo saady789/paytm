@@ -29,13 +29,13 @@ export const userRouter = router({
         })
         )
         .mutation(async (opts) => {
-            
+
             const existingUser = await prisma.user.findUnique({
                 where: {
                     email: opts.input.email
                 }
             });
-        
+
             if (existingUser) {
                 // If a user with the provided email already exists
                 const output = {
@@ -50,7 +50,7 @@ export const userRouter = router({
                 const newUser = await prisma.user.create({
                     data: opts.input
                 });
-        
+
                 const output = {
                     status: 'success',
                     subject: 'success',
@@ -60,7 +60,65 @@ export const userRouter = router({
                 return output;
             }
         }),
-        
+    getAllUsers: publicProcedure
+        .input(
+            z.number()
+        )
+        .output(z.object({
+            status: z.string(),
+            subject: z.string(),
+            message: z.string(),
+            payload: z.union([
+                z.null(),
+                z.array(z.object({
+                    id: z.number(),
+                    name: z.string(),
+                    email: z.string(),
+                    balance: z.number(),
+                    createdAt: z.date(),
+                    password: z.string(),
+                }))
+            ])
+        }))
+
+        .mutation(async (opts) => {
+
+            const userToExclude = await prisma.user.findUnique({
+                where: {
+                    id: opts.input // Assuming opts.input is the ID of the user to exclude
+                }
+            });
+
+            if (!userToExclude) {
+                // If the user with the provided ID doesn't exist
+                const output = {
+                    status: 'failure',
+                    subject: 'error',
+                    message: 'User not found',
+                    payload: null
+                };
+                return output;
+            }
+
+            // Fetch all users except the one specified by the ID
+            const allUsersExceptExcluded = await prisma.user.findMany({
+                where: {
+                    NOT: {
+                        id: opts.input // Exclude the user with this ID
+                    }
+                }
+            });
+
+            const output = {
+                status: 'success',
+                subject: 'success',
+                message: 'Users fetched successfully',
+                payload: allUsersExceptExcluded
+            };
+            return output;
+        }),
+
+
 
 
 });
