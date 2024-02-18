@@ -90,6 +90,7 @@ export const options = {
   pages:{
     signIn: '/Login',
   },
+  secret: env("SECRET"),
   session: {
     // Add session configuration if needed
     strategy: "jwt",
