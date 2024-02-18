@@ -14,7 +14,7 @@ interface FormValues {
     confirmPassword: string;
 }
 
-const page: React.FC = () => {
+const Page: React.FC = () => {
     const [disabled, setDisabled] = useState<boolean>(false);
     const createUser = trpc.user.createUser.useMutation();
     const router = useRouter();
@@ -95,4 +95,4 @@ const page: React.FC = () => {
     );
 }
 
-export default page;
+export default Page;

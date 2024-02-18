@@ -11,7 +11,7 @@ interface FormValues {
     password: string;
 }
 
-const page: React.FC = () => {
+const Page: React.FC = () => {
     const router = useRouter();
     const [disabled, setDisabled] = useState<boolean>(false);
 
@@ -68,4 +68,4 @@ const page: React.FC = () => {
     );
 }
 
-export default page;
+export default Page;
