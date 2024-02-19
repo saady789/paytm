@@ -39,7 +39,7 @@ const HomePage = () => {
             if(response.status=='failure') toast.error(response.message);
             else toast.success('Money sent successfully');
             let userBalance = await balance.mutateAsync(user?.id);
-            if(userBalance.payload) dispatch(updateUserBalance(userBalance?.payload))
+            if(userBalance.payload==0 ||userBalance.payload) dispatch(updateUserBalance(userBalance?.payload))
 
         }
     };
