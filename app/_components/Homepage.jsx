@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState,useEffect } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -6,13 +7,14 @@ import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { current } from '@reduxjs/toolkit';
 import { trpc } from "@/app/_trpc/Client";
-import {updateUserBalance} from '@/app/redux/userSlice';
+import {updateUserBalance,setAllUser} from '@/app/redux/userSlice';
 
 
 const HomePage = () => {
     const { data: session } = useSession();
     const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user.currentUser);
+    const allUsers = trpc.user.getAllUsers.useMutation();
     const [selectedUser, setSelectedUser] = useState(null);
     const [amount, setAmount] = useState(1);
     const send = trpc.transaction.sendMoney.useMutation();
@@ -20,6 +22,23 @@ const HomePage = () => {
 
     // Dummy users for demonstration purposes
     const users = useAppSelector((state) => state?.user?.allUsers);
+    let input = useAppSelector((state) => state.user.currentUser);
+
+    const getAllUsers = async (id) => {
+        const d = await allUsers.mutateAsync(id);
+        await dispatch(setAllUser(d.payload));
+    
+      }
+
+      useEffect(() => {
+
+        if (session) {
+          if (input && input.id) getAllUsers(input.id);
+        }
+        return () => {
+    
+        }
+      }, [session,input])
 
     const handleSendMoney = async () => {
         if (amount <= 0 || !user?.balance || user.balance < amount) {

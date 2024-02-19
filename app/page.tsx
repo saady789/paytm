@@ -18,7 +18,7 @@ export default function Home() {
 
   const getAllUsers = async (id: number) => {
     const d = await allUsers.mutateAsync(id);
-    dispatch(setAllUser(d.payload));
+    await dispatch(setAllUser(d.payload));
 
   }
 
